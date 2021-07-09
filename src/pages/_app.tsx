@@ -5,13 +5,15 @@ import {SidebarDrawerProvider} from '../contexts/SidebarDrawerContext'
 import { makeServer } from '../services/mirage';
 const { NODE_ENV } = process.env;
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
 
 if(NODE_ENV === 'development') {
   makeServer();
   console.log('Created dev server')
 }
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -21,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </SidebarDrawerProvider>
       </ChakraProvider>
+      <ReactQueryDevtools />
     </QueryClientProvider>
 
   ) 
