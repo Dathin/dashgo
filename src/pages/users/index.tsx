@@ -12,7 +12,18 @@ export default function UserList(){
 
     const {data, isLoading, error} = useQuery('users1', async () => {
         const response = await fetch('http://localhost:3000/api/users');
-        return await response.json()
+        const users = (await response.json()).users.map(({id, name, email, createdAt} )=> ({
+            id,
+            name,
+            email,
+            createdAt: new Date(createdAt).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            })
+        }));
+
+        return users;
     })
 
     const isWideVersion = useBreakpointValue({
@@ -70,25 +81,27 @@ export default function UserList(){
                                 </Tr>
                             </Thead>
                             <Tbody>
-                                <Tr>
+                                {data.map(({id, name, email, createdAt}) => (
+                                    <Tr key={id}>
                                     <Td px={["4", "4", "6"]}>
                                         <Checkbox colorScheme="pink" />  
                                     </Td>
                                     <Td>
                                         <Box>
-                                            <Text fontWeight="bold">Pedro Caires</Text>
-                                            <Text fontSize="sm" color="gray.300">pedromcaires99@gmail.com</Text>
+                                            <Text fontWeight="bold">{name}</Text>
+                                            <Text fontSize="sm" color="gray.300">{email}</Text>
                                         </Box> 
                                     </Td>
                                     { isWideVersion && (
                                         <Td>
-                                            27/07/2021
+                                            {createdAt}
                                         </Td>
                                     )}
                                     <Td>
                                         <Button as="a" size="sm" fontSize="sm" colorScheme="purple" leftIcon={<Icon fontSize="16" as={RiPencilLine}/>}>{isWideVersion ? 'Editar' : ''}</Button>
                                     </Td>
                                 </Tr>
+                                ))}
                             </Tbody>
                         </Table>
 
